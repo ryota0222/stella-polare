@@ -15,9 +15,11 @@ export const Header = memo(() => {
         border: `solid 1px ${theme.colors.gray[3]}`,
       }}
     >
-      <Link href="/">
-        <Image src="/logo.png" width={40} height={40} alt="ロゴ" />
-      </Link>
+      <Box w={40} h={40}>
+        <Link href="/">
+          <Image src="/logo.png" width={40} height={40} alt="ロゴ" />
+        </Link>
+      </Box>
       <Title size="h5">{APP_NAME}</Title>
     </Box>
   );
