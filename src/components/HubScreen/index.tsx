@@ -1,7 +1,20 @@
+import { useFetchProfile } from "@/hooks/useProfile";
 import { Container, Text } from "@mantine/core";
-import { memo } from "react";
+import { useRouter } from "next/router";
+import { memo, useEffect } from "react";
 
-export const HubScreen = memo(() => {
+interface Props {
+  accessToken: string;
+}
+
+export const HubScreen = memo<Props>(({ accessToken }) => {
+  const router = useRouter();
+  const { data } = useFetchProfile({ accessToken });
+  useEffect(() => {
+    if (data && !data.spaceId) {
+      router.replace("/createSpace");
+    }
+  }, [data]);
   return (
     <Container>
       <Text>行きたいところ</Text>
