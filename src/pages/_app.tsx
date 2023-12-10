@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/globals.css";
 import "@mantine/core/styles.css";
 import type { AppProps } from "next/app";
@@ -12,6 +13,16 @@ const inter = Inter({ subsets: ["latin"] });
 
 const theme = createTheme({
   /** Put your mantine theme override here */
+});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      retry: false,
+    },
+  },
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -45,10 +56,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   pageProps.liff = liffObject;
   pageProps.liffError = liffError;
   return (
-    <MantineProvider theme={{ ...theme, fontFamily: inter.style.fontFamily }}>
-      <Header />
-      {data && <Component {...pageProps} />}
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={{ ...theme, fontFamily: inter.style.fontFamily }}>
+        <Header />
+        {data && <Component {...pageProps} />}
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }
 
