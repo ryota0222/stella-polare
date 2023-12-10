@@ -6,9 +6,12 @@ export interface Profile {
   userId: string;
   displayName: string;
   pictureUrl?: string;
+  spaceId?: string;
 }
 
-export const getAccount = async (accessToken: string | null): Promise<null> => {
+export const getAccount = async (
+  accessToken: string | null
+): Promise<Profile | null> => {
   if (accessToken === null) return null;
   return await client.get(`/user`, {
     headers: {
