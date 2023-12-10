@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import type { Liff } from "@line/liff";
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
+import { useFetchProfile } from "@/hooks/useProfile";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,9 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
-
+  const { data } = useFetchProfile({
+    accessToken: liffObject ? liffObject.getAccessToken() : null,
+  });
   // Execute liff.init() when the app is initialized
   useEffect(() => {
     // to avoid `window is not defined` error
@@ -44,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <MantineProvider theme={{ ...theme, fontFamily: inter.style.fontFamily }}>
       <Header />
-      <Component {...pageProps} />
+      {data && <Component {...pageProps} />}
     </MantineProvider>
   );
 }

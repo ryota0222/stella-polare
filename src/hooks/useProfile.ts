@@ -1,25 +1,36 @@
-import { Liff } from "@line/liff";
-import { useEffect, useState } from "react";
+import client from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
+import { ExtractFnReturnType, QueryConfig } from "@/lib/react-query";
 
 export interface Profile {
   userId: string;
   displayName: string;
   pictureUrl?: string;
-  statusMessage?: string;
 }
 
-type UseProfile = (liff: Liff | null) => {
-  profile: Profile | null;
+export const getAccount = async (accessToken: string | null): Promise<null> => {
+  if (accessToken === null) return null;
+  return await client.get(`/user`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 };
 
-export const useProfile: UseProfile = (liff) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
+type QueryFnType = typeof getAccount;
 
-  useEffect(() => {
-    if (liff) {
-      liff.getProfile().then((profile) => setProfile(profile));
-    }
-  }, [liff]);
+type UseGetProfileOptions = {
+  accessToken: string | null;
+  config?: QueryConfig<QueryFnType>;
+};
 
-  return { profile };
+export const useFetchProfile = ({
+  accessToken,
+  config,
+}: UseGetProfileOptions) => {
+  return useQuery<ExtractFnReturnType<QueryFnType>>({
+    queryKey: ["profile"],
+    queryFn: () => getAccount(accessToken),
+    ...config,
+  });
 };
