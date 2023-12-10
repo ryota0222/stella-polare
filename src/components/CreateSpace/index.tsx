@@ -55,7 +55,7 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
           },
           body: {
             password,
-            partnerId: data?.data.userId,
+            partnerId: data?.userId,
           },
         });
       } else if (createModalOpened) {
@@ -69,7 +69,7 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
         });
       }
     },
-    [createModalOpened, joinModalOpened, liff, data?.data.userId]
+    [createModalOpened, joinModalOpened, liff, data?.userId]
   );
   return (
     <>
@@ -79,7 +79,7 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
         style={{ display: "flex", flexDirection: "column" }}
       >
         <Stack align="center" mt="md">
-          <Avatar src={data?.data.avatar} alt={data?.data.name} size={80} />
+          <Avatar src={data?.avatar} alt={data?.name} size={80} />
           <Text fw="bold">{(data as any)?.name}</Text>
         </Stack>
         <Spacer />
@@ -97,7 +97,9 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
         </Button>
       </Container>
       <Modal opened={opened} onClose={close} title={title}>
-        <form onSubmit={form.onSubmit((values) => console.log(values))}>
+        <form
+          onSubmit={form.onSubmit((values) => handleSubmit(values.password))}
+        >
           <TextInput
             withAsterisk
             label="合言葉を入力してください"

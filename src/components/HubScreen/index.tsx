@@ -11,7 +11,7 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
   const router = useRouter();
   const { data } = useFetchProfile({ accessToken });
   useEffect(() => {
-    if (data && !data.data.spaceId) {
+    if (data && !data.spaceId) {
       router.replace("/createSpace");
     }
   }, [data]);
