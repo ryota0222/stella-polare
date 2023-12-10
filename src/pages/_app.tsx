@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 import { MantineProvider, createTheme } from "@mantine/core";
 import { Inter } from "next/font/google";
 import type { Liff } from "@line/liff";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, PropsWithChildren } from "react";
 import { Header } from "@/components/Header";
 import { useFetchProfile } from "@/hooks/useProfile";
 
@@ -15,22 +15,20 @@ const theme = createTheme({
   /** Put your mantine theme override here */
 });
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
-    },
-  },
-});
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       refetchOnWindowFocus: false,
+//       staleTime: Infinity,
+//       retry: false,
+//     },
+//   },
+// });
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
-  const { data } = useFetchProfile({
-    accessToken: liffObject ? liffObject.getAccessToken() : null,
-  });
   // Execute liff.init() when the app is initialized
   useEffect(() => {
     // to avoid `window is not defined` error
@@ -59,10 +57,22 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={{ ...theme, fontFamily: inter.style.fontFamily }}>
         <Header />
-        {data && <Component {...pageProps} />}
+        <Wrapper accessToken={liffObject ? liffObject.getAccessToken() : null}>
+          <Component {...pageProps} />
+        </Wrapper>
       </MantineProvider>
     </QueryClientProvider>
   );
 }
+
+interface Props {
+  accessToken: string | null;
+}
+const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
+  const { data } = useFetchProfile({
+    accessToken,
+  });
+  return <>{data && <>{children}</>}</>;
+});
 
 export default MyApp;
