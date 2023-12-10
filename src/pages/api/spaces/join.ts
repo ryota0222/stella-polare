@@ -23,6 +23,9 @@ export default async function handler(
         },
       });
       profile = await response.json();
+      if (profile?.message) {
+        return res.status(401).json({ message: profile.message });
+      }
     } else {
       return res
         .status(401)
@@ -37,20 +40,32 @@ export default async function handler(
     }
     const db = getFirestore();
     if (req.method === "POST") {
-      const docRef = db.collection(COLLECTION_NAME).doc(req.body.id);
-      const doc = await docRef.get();
-      if (!doc.exists) {
+      let docId: any = null;
+      let docData: any = null;
+      const querySnapshot = await db
+        .collection(COLLECTION_NAME)
+        .where("password", "==", req.body.password)
+        .get();
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          docData = doc.data();
+          docId = doc.id;
+        });
+      }
+      if (!docId) {
         return res.status(404).json({ message: "space not found" });
       }
-      if (doc.data()?.password !== req.body.password) {
-        return res.status(400).json({ message: "password is incorrect" });
+      if (docData?.partner) {
+        return res.status(400).json({ message: "space is full" });
       }
+      const docRef = db.collection(COLLECTION_NAME).doc(docId);
       await docRef.update({
         partner: req.body.partnerId
           ? `/users/${req.body.partnerId}`
           : undefined,
       });
-      return res.status(200);
+      return res.status(200).json({ data: docId });
     }
     res.status(200);
   } catch (err) {

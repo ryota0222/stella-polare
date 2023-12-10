@@ -23,6 +23,9 @@ export default async function handler(
         },
       });
       profile = await response.json();
+      if (profile?.message) {
+        return res.status(401).json({ message: profile.message });
+      }
     } else {
       return res
         .status(401)

@@ -9,12 +9,13 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Spacer } from "../Spacer";
 import { useFetchProfile } from "@/hooks/useProfile";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import client from "@/lib/axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   liff: Liff;
@@ -22,6 +23,8 @@ interface Props {
 
 export const CreateSpacePage = memo<Props>(({ liff }) => {
   const { data } = useFetchProfile({ accessToken: liff.getAccessToken() });
+  const [pending, setPending] = useState(false);
+  const queryClient = useQueryClient();
   const [joinModalOpened, { open: joinModalOpen, close: joinModalClose }] =
     useDisclosure(false);
   const [
@@ -47,29 +50,49 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
     },
   });
   const handleSubmit = useCallback(
-    (password: string) => {
-      if (joinModalOpened) {
-        client.post("/api/space/join", {
-          headers: {
-            Authorization: `Bearer ${liff.getAccessToken()}`,
-          },
-          body: {
-            password,
-            partnerId: data?.userId,
-          },
-        });
-      } else if (createModalOpened) {
-        client.post("/api/space", {
-          headers: {
-            Authorization: `Bearer ${liff.getAccessToken()}`,
-          },
-          body: {
-            password,
-          },
-        });
+    async (password: string) => {
+      try {
+        setPending(true);
+        if (joinModalOpened) {
+          const response = await client.post("/spaces/join", {
+            headers: {
+              Authorization: `Bearer ${liff.getAccessToken()}`,
+            },
+            body: {
+              password,
+              partnerId: data?.userId,
+            },
+          });
+          await queryClient.invalidateQueries({
+            queryKey: [
+              "spaces",
+              { id: response.data, accessToken: liff.getAccessToken() },
+            ],
+          });
+        } else if (createModalOpened) {
+          const response = await client.post("/spaces", {
+            headers: {
+              Authorization: `Bearer ${liff.getAccessToken()}`,
+            },
+            body: {
+              password,
+            },
+          });
+          if (response.data) {
+            await queryClient.invalidateQueries({
+              queryKey: [
+                "spaces",
+                { id: response.data, accessToken: liff.getAccessToken() },
+              ],
+            });
+          }
+        }
+        setPending(false);
+      } catch (err) {
+        setPending(false);
       }
     },
-    [createModalOpened, joinModalOpened, liff, data?.userId]
+    [createModalOpened, joinModalOpened, liff, data?.userId, queryClient]
   );
   return (
     <>
@@ -107,7 +130,9 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
             {...form.getInputProps("password")}
           />
           <Group justify="flex-end" mt="md">
-            <Button type="submit">{joinModalOpened ? "参加" : "作成"}</Button>
+            <Button type="submit" loading={pending}>
+              {joinModalOpened ? "参加" : "作成"}
+            </Button>
           </Group>
         </form>
       </Modal>

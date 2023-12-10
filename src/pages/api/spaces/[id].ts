@@ -23,6 +23,9 @@ export default async function handler(
         },
       });
       profile = await response.json();
+      if (profile?.message) {
+        return res.status(401).json({ message: profile.message });
+      }
     } else {
       return res
         .status(401)
@@ -43,7 +46,16 @@ export default async function handler(
       const docRef = db.collection(COLLECTION_NAME).doc(req.query.id);
       const doc = await docRef.get();
       if (doc.exists) {
-        return res.status(200).json(doc.data());
+        let data = doc.data();
+        if (data?.owner) {
+          const owner = await data.owner.get();
+          data.owner = owner.data();
+        }
+        if (data?.partner) {
+          const partner = await data.partner.get();
+          data.partner = partner.data();
+        }
+        return res.status(200).json(data);
       } else {
         return res.status(404);
       }
