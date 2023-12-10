@@ -69,10 +69,16 @@ interface Props {
   accessToken: string | null;
 }
 const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
-  const { data } = useFetchProfile({
+  const { data, error } = useFetchProfile({
     accessToken,
   });
-  return <>{data && <>{children}</>}</>;
+  return (
+    <>
+      <p>accessToken: {accessToken}</p>
+      {error && <p>error: {JSON.stringify(error)}</p>}
+      {data && <>{children}</>}
+    </>
+  );
 });
 
 export default MyApp;
