@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/globals.css";
 import "@mantine/core/styles.css";
 import type { AppProps } from "next/app";
-import { MantineProvider, createTheme } from "@mantine/core";
+import { Center, Loader, MantineProvider, createTheme } from "@mantine/core";
 import { Inter } from "next/font/google";
 import type { Liff } from "@line/liff";
 import { useState, useEffect, memo, PropsWithChildren } from "react";
@@ -69,15 +69,21 @@ interface Props {
   accessToken: string | null;
 }
 const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
-  const { data, error } = useFetchProfile({
+  const { data, error, isLoading } = useFetchProfile({
     accessToken,
   });
   return (
     <>
       <p>accessToken: {accessToken}</p>
       {error && <p>error: {JSON.stringify(error)}</p>}
-      {data && <p>data: {JSON.stringify(data)}</p>}
-      {data && <>{children}</>}
+      {data && <p>data: {JSON.stringify(data.data)}</p>}
+      {!isLoading ? (
+        <Center py="20vh">
+          <Loader />
+        </Center>
+      ) : (
+        <>{data && <>{children}</>}</>
+      )}
     </>
   );
 });

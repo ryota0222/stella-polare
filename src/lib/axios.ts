@@ -9,7 +9,7 @@ const client = Axios.create(axiosConfig);
 
 client.interceptors.response.use(
   (response) => {
-    return response;
+    return response.data;
   },
   async (error) => {
     return Promise.reject(error);

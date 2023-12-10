@@ -11,7 +11,7 @@ export interface Profile {
 
 export const getAccount = async (
   accessToken: string | null
-): Promise<Profile | null> => {
+): Promise<{ data: Profile } | null> => {
   if (accessToken === null) return null;
   return await client.get(`/user`, {
     headers: {
