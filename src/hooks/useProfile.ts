@@ -4,8 +4,8 @@ import { ExtractFnReturnType, QueryConfig } from "@/lib/react-query";
 
 export interface Profile {
   userId: string;
-  displayName: string;
-  pictureUrl?: string;
+  name: string;
+  avatar?: string;
   spaceId?: string;
 }
 

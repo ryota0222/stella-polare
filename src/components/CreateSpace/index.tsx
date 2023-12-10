@@ -1,8 +1,20 @@
 import type { Liff } from "@line/liff";
-import { Avatar, Button, Container, Stack, Text } from "@mantine/core";
-import { memo } from "react";
+import {
+  Avatar,
+  Button,
+  Container,
+  Group,
+  Modal,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
+import { memo, useCallback, useMemo } from "react";
 import { Spacer } from "../Spacer";
 import { useFetchProfile } from "@/hooks/useProfile";
+import { useDisclosure } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
+import client from "@/lib/axios";
 
 interface Props {
   liff: Liff;
@@ -10,25 +22,93 @@ interface Props {
 
 export const CreateSpacePage = memo<Props>(({ liff }) => {
   const { data } = useFetchProfile({ accessToken: liff.getAccessToken() });
+  const [joinModalOpened, { open: joinModalOpen, close: joinModalClose }] =
+    useDisclosure(false);
+  const [
+    createModalOpened,
+    { open: createModalOpen, close: createModalClose },
+  ] = useDisclosure(false);
+  const opened = useMemo(
+    () => joinModalOpened || createModalOpened,
+    [joinModalOpened, createModalOpened]
+  );
+  const close = useCallback(() => {
+    joinModalClose();
+    createModalClose();
+  }, [createModalClose, joinModalClose]);
+  const title = useMemo(() => {
+    if (joinModalOpened) return "スペースに参加";
+    if (createModalOpened) return "スペースの作成";
+    return "";
+  }, [joinModalOpened, createModalOpened]);
+  const form = useForm({
+    initialValues: {
+      password: "",
+    },
+  });
+  const handleSubmit = useCallback(
+    (password: string) => {
+      if (joinModalOpened) {
+        client.post("/api/space/join", {
+          headers: {
+            Authorization: `Bearer ${liff.getAccessToken()}`,
+          },
+          body: {
+            password,
+            partnerId: data?.data.userId,
+          },
+        });
+      } else if (createModalOpened) {
+        client.post("/api/space", {
+          headers: {
+            Authorization: `Bearer ${liff.getAccessToken()}`,
+          },
+          body: {
+            password,
+          },
+        });
+      }
+    },
+    [createModalOpened, joinModalOpened, liff, data?.data.userId]
+  );
   return (
-    <Container
-      py="md"
-      mih="calc(100dvh - 58px)"
-      style={{ display: "flex", flexDirection: "column" }}
-    >
-      <Stack align="center" mt="md">
-        <Avatar
-          src={(data as any)?.avatar}
-          alt={(data as any)?.name}
-          size={80}
-        />
-        <Text fw="bold">{(data as any)?.name}</Text>
-      </Stack>
-      <Spacer />
-      <Button fullWidth>スペースに参加</Button>
-      <Button fullWidth mt="md" variant="outline" mb={40}>
-        スペースの作成
-      </Button>
-    </Container>
+    <>
+      <Container
+        py="md"
+        mih="calc(100dvh - 58px)"
+        style={{ display: "flex", flexDirection: "column" }}
+      >
+        <Stack align="center" mt="md">
+          <Avatar src={data?.data.avatar} alt={data?.data.name} size={80} />
+          <Text fw="bold">{(data as any)?.name}</Text>
+        </Stack>
+        <Spacer />
+        <Button fullWidth onClick={joinModalOpen}>
+          スペースに参加
+        </Button>
+        <Button
+          fullWidth
+          mt="md"
+          variant="outline"
+          mb={40}
+          onClick={createModalOpen}
+        >
+          スペースの作成
+        </Button>
+      </Container>
+      <Modal opened={opened} onClose={close} title={title}>
+        <form onSubmit={form.onSubmit((values) => console.log(values))}>
+          <TextInput
+            withAsterisk
+            label="合言葉を入力してください"
+            placeholder="アイコトバ"
+            {...form.getInputProps("password")}
+          />
+          <Group justify="flex-end" mt="md">
+            <Button type="submit">{joinModalOpened ? "参加" : "作成"}</Button>
+          </Group>
+        </form>
+      </Modal>
+    </>
   );
 });

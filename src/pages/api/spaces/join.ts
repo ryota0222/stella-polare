@@ -36,34 +36,19 @@ export default async function handler(
       });
     }
     const db = getFirestore();
-    if (req.method === "GET") {
-      if (typeof req.query.spaceId !== "string") {
-        return res.status(400).json({ message: "spaceId is missing" });
-      }
-      const docRef = db.collection(COLLECTION_NAME).doc(req.query.spaceId);
-      const doc = await docRef.get();
-      if (doc.exists) {
-        return res.status(200).json(doc.data());
-      } else {
-        return res.status(404);
-      }
-    }
     if (req.method === "POST") {
-      const docRef = db.collection(COLLECTION_NAME).doc();
-      await docRef.set({
-        owner: `/users/${profile.userId}`,
-        password: req.body.password,
-      });
-      return res.status(200).json({ data: docRef.id });
-    }
-    if (req.method === "PUT") {
       const docRef = db.collection(COLLECTION_NAME).doc(req.body.id);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return res.status(404).json({ message: "space not found" });
+      }
+      if (doc.data()?.password !== req.body.password) {
+        return res.status(400).json({ message: "password is incorrect" });
+      }
       await docRef.update({
-        owner: `/users/${profile.userId}`,
         partner: req.body.partnerId
           ? `/users/${req.body.partnerId}`
           : undefined,
-        password: req.body.password,
       });
       return res.status(200);
     }

@@ -1,7 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/globals.css";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import type { AppProps } from "next/app";
+import { Notifications } from "@mantine/notifications";
 import { Center, Loader, MantineProvider, createTheme } from "@mantine/core";
 import { Inter } from "next/font/google";
 import type { Liff } from "@line/liff";
@@ -56,6 +58,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={{ ...theme, fontFamily: inter.style.fontFamily }}>
+        <Notifications />
         <Header />
         <Wrapper accessToken={liffObject ? liffObject.getAccessToken() : null}>
           <Component {...pageProps} />
@@ -77,7 +80,7 @@ const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
       <p>accessToken: {accessToken}</p>
       {error && <p>error: {JSON.stringify(error)}</p>}
       {data && <p>data: {JSON.stringify(data.data)}</p>}
-      {!isLoading ? (
+      {isLoading ? (
         <Center py="20vh">
           <Loader />
         </Center>
