@@ -12,7 +12,7 @@ export const Header = memo(() => {
       style={{
         display: "flex",
         alignItems: "center",
-        border: `solid 1px ${theme.colors.gray[3]}`,
+        borderBottom: `solid 1px ${theme.colors.gray[3]}`,
       }}
     >
       <Box w={40} h={40}>
