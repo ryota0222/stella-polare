@@ -8,13 +8,14 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
   liff,
   liffError,
 }) => {
+  const accessToken = liff?.getAccessToken();
   return (
     <div>
       <Head>
         <title>{APP_NAME}</title>
       </Head>
       <main>
-        {liff && <HubScreen />}
+        {accessToken && <HubScreen accessToken={accessToken} />}
         {liffError && (
           <>
             <p>LIFF init failed.</p>

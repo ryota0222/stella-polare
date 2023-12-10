@@ -74,8 +74,9 @@ const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
   });
   return (
     <>
-      <p>accessToken: {accessToken}</p>
+      <p>accessToken: {accessToken?.slice(0, 10)}</p>
       {error && <p>error: {JSON.stringify(error)}</p>}
+      {data && <p>data: {JSON.stringify(data)}</p>}
       {data && <>{children}</>}
     </>
   );
