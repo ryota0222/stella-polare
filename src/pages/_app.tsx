@@ -17,16 +17,15 @@ const theme = createTheme({
   /** Put your mantine theme override here */
 });
 
-// const queryClient = new QueryClient({
-//   defaultOptions: {
-//     queries: {
-//       refetchOnWindowFocus: false,
-//       staleTime: Infinity,
-//       retry: false,
-//     },
-//   },
-// });
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      retry: false,
+    },
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);

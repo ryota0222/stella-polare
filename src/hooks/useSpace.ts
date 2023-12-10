@@ -1,39 +1,43 @@
 import client from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import { ExtractFnReturnType, QueryConfig } from "@/lib/react-query";
+import { Profile } from "./useProfile";
 
-export interface Profile {
-  userId: string;
-  name: string;
-  avatar?: string;
-  spaceId?: string;
+export interface Space {
+  owner: Profile;
+  partner?: Profile;
+  password: string;
+  spaceId: string;
 }
 
-export const getAccount = async (
+export const getSpace = async (
+  id: string,
   accessToken: string | null
-): Promise<{ data: Profile } | null> => {
+): Promise<{ data: Space } | null> => {
   if (accessToken === null) return null;
-  return await client.get(`/user`, {
+  return await client.get(`/spaces/${id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 };
 
-type QueryFnType = typeof getAccount;
+type QueryFnType = typeof getSpace;
 
-type UseGetProfileOptions = {
+type UseGetSpaceOptions = {
+  id: string;
   accessToken: string | null;
   config?: QueryConfig<QueryFnType>;
 };
 
 export const useFetchProfile = ({
+  id,
   accessToken,
   config,
-}: UseGetProfileOptions) => {
+}: UseGetSpaceOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
-    queryKey: ["profile", { accessToken }],
-    queryFn: () => getAccount(accessToken),
+    queryKey: ["spaces", { id, accessToken }],
+    queryFn: () => getSpace(id, accessToken),
     ...config,
   });
 };
