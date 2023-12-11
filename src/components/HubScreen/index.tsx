@@ -1,7 +1,9 @@
 import { useFetchProfile } from "@/hooks/useProfile";
-import { Container, Text } from "@mantine/core";
+import { Box, Container, Flex } from "@mantine/core";
 import { useRouter } from "next/router";
 import { memo, useEffect } from "react";
+import { HUB_LIST } from "../HubItem/constant";
+import { HubItem } from "../HubItem";
 
 interface Props {
   accessToken: string;
@@ -17,13 +19,13 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
   }, [data]);
   return (
     <Container>
-      <Text>行きたいところ</Text>
-      <Text>食べたいもの</Text>
-      <Text>欲しいもの</Text>
-      <Text>やりたいこと</Text>
-      <Text>やること</Text>
-      <Text>我が家のルール</Text>
-      <Text>リマインダー</Text>
+      <Flex wrap="wrap" justify="space-around" gap="md">
+        {HUB_LIST.map((item) => (
+          <Box key={item.id} w="45%">
+            <HubItem {...item} />
+          </Box>
+        ))}
+      </Flex>
     </Container>
   );
 });
