@@ -1,12 +1,12 @@
 import { IHubItem } from "../types";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { MdFoodBank } from "react-icons/md";
 import { IoCart } from "react-icons/io5";
 import { MdDirectionsWalk } from "react-icons/md";
 import { FaListCheck } from "react-icons/fa6";
 import { TbPigMoney } from "react-icons/tb";
 import { MdOutlineRule } from "react-icons/md";
 import { MdAnnouncement } from "react-icons/md";
+import { PiForkKnifeFill } from "react-icons/pi";
 
 export const HUB_LIST: IHubItem[] = [
   {
@@ -21,7 +21,7 @@ export const HUB_LIST: IHubItem[] = [
     title: "食べたいもの",
     color: "pink",
     isComingSoon: true,
-    icon: MdFoodBank,
+    icon: PiForkKnifeFill,
   },
   {
     id: "hub_03",

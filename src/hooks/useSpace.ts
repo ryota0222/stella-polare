@@ -11,10 +11,10 @@ export interface Space {
 }
 
 export const getSpace = async (
-  id: string,
+  id: string | null,
   accessToken: string | null
 ): Promise<{ data: Space } | null> => {
-  if (accessToken === null) return null;
+  if (accessToken === null || id === null) return null;
   return await client.get(`/spaces/${id}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -25,19 +25,19 @@ export const getSpace = async (
 type QueryFnType = typeof getSpace;
 
 type UseGetSpaceOptions = {
-  id: string;
+  id?: string;
   accessToken: string | null;
   config?: QueryConfig<QueryFnType>;
 };
 
-export const useFetchProfile = ({
+export const useFetchSpace = ({
   id,
   accessToken,
   config,
 }: UseGetSpaceOptions) => {
   return useQuery<ExtractFnReturnType<QueryFnType>>({
     queryKey: ["spaces", { id, accessToken }],
-    queryFn: () => getSpace(id, accessToken),
+    queryFn: () => getSpace(id || null, accessToken),
     ...config,
   });
 };
