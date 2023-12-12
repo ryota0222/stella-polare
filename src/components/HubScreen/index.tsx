@@ -47,12 +47,12 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
               <Stack gap={4} align="center">
                 <Avatar src={space.partner?.avatar} size={64} />
                 <Text fz={12} style={{ textAlign: "center" }}>
-                  {space.owner.name}
+                  {space.partner.name}
                 </Text>
               </Stack>
             ) : (
               <Stack gap={4} align="center" role="button" onClick={open}>
-                <Avatar src={space.owner.avatar} size={64} />
+                <Avatar size={64} />
                 <Text fz={12} style={{ textAlign: "center" }}>
                   招待
                 </Text>
