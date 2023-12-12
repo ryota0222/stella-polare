@@ -79,13 +79,17 @@ const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
       <p>accessToken: {accessToken}</p>
       {error && <p>error: {JSON.stringify(error)}</p>}
       {data && <p>data: {JSON.stringify(data)}</p>}
-      {isLoading ? (
+      {/* {isLoading ? (
         <Center py="20vh">
           <Loader />
         </Center>
-      ) : (
-        <>{data && <>{children}</>}</>
-      )}
+      ) : ( */}
+      <>
+        {/* {data &&  */}
+        <>{children}</>
+        {/* } */}
+      </>
+      {/* )} */}
     </>
   );
 });

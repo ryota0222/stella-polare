@@ -47,7 +47,7 @@ export default async function handler(
       });
       return res.status(200).json({ data: docRef.id });
     }
-    res.status(200);
+    res.status(200).json({ message: "ok" });
   } catch (err) {
     console.log(err);
     if (err instanceof Error) {
