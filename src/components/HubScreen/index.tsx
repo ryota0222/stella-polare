@@ -35,24 +35,24 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
       <Container>
         {space && (
           <Flex py="md" gap="lg" justify="space-evenly">
-            {space.data.owner && (
+            {space.owner && (
               <Stack gap={4} align="center">
-                <Avatar src={space.data.owner.avatar} size={64} />
+                <Avatar src={space.owner.avatar} size={64} />
                 <Text fz={12} style={{ textAlign: "center" }}>
-                  {space.data.owner.name}
+                  {space.owner.name}
                 </Text>
               </Stack>
             )}
-            {space.data.partner ? (
+            {space.partner ? (
               <Stack gap={4} align="center">
-                <Avatar src={space.data.partner?.avatar} size={64} />
+                <Avatar src={space.partner?.avatar} size={64} />
                 <Text fz={12} style={{ textAlign: "center" }}>
-                  {space.data.owner.name}
+                  {space.owner.name}
                 </Text>
               </Stack>
             ) : (
               <Stack gap={4} align="center" role="button" onClick={open}>
-                <Avatar src={space.data.owner.avatar} size={64} />
+                <Avatar src={space.owner.avatar} size={64} />
                 <Text fz={12} style={{ textAlign: "center" }}>
                   招待
                 </Text>

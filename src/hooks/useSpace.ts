@@ -13,7 +13,7 @@ export interface Space {
 export const getSpace = async (
   id: string | null,
   accessToken: string | null
-): Promise<{ data: Space } | null> => {
+): Promise<Space | null> => {
   if (accessToken === null || id === null) return null;
   return await client.get(`/spaces/${id}`, {
     headers: {
