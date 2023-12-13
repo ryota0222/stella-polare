@@ -1,6 +1,6 @@
 import { Spacer } from "@/components/Spacer";
 import { Button, Modal, Stack, TextInput } from "@mantine/core";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
@@ -29,6 +29,14 @@ export const PutModal = memo<Props>(
         url: defaultData.url,
       },
     });
+    useEffect(() => {
+      if (defaultData.name) {
+        form.setFieldValue("name", defaultData.name);
+      }
+      if (defaultData.url) {
+        form.setFieldValue("url", defaultData.url);
+      }
+    }, [defaultData.name, defaultData.url]);
     const handleSubmit = useCallback(
       (values: { name: string; url: string }) => {
         mutation.mutate(
