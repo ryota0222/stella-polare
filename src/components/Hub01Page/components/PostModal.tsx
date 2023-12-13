@@ -32,7 +32,7 @@ export const PostModal = memo<Props>(
             accessToken,
             body: {
               name: values.name,
-              url: values.url,
+              url: values.url.length ? values.url : null,
               hubId: hubId,
             },
           },
