@@ -1,136 +1,168 @@
 import { Liff } from "@line/liff";
 import {
+  ActionIcon,
   Avatar,
-  Box,
+  Center,
   Container,
   Flex,
+  Group,
+  Loader,
   Stack,
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { HubTitle } from "../HubTitle";
 import { FloatingAddButton } from "../FloatingAddButton";
 import dayjs from "@/lib/dayjs";
 import Link from "next/link";
+import { useFetchHubData } from "@/hooks/useHubData";
+import { useFetchProfile } from "@/hooks/useProfile";
+import { useDisclosure } from "@mantine/hooks";
+import { IoPencil, IoTrash } from "react-icons/io5";
+import { PostModal } from "./components/PostModal";
+import { PutModal } from "./components/PutModal";
+import { DeleteModal } from "./components/DeleteModal";
 interface Props {
   liff: Liff | null;
 }
 
-const response = [
-  {
-    id: "733GrQ5evaf64j4mA8pv",
-    createdAt: "2023-12-13T02:00:33+09:00",
-    url: "https://acerola.tips",
-    name: "title100",
-    updatedAt: "2023-12-13T02:12:42+09:00",
-    lastUpdatedUser: {
-      name: "松本 亮太",
-      avatar:
-        "https://profile.line-scdn.net/0hCSDkoihVHHxpEjXXr1FiAxlCHxZKY0VuRHIGG15CQEhcIgh6RSNTEw4TRB9cdl4iQyYGGFsWSk9lAWsad0TgSG4iQU1VIVspQHdbkg",
-      userId: "U8c3fb9c7f335f1ed474271dd5ba0819c",
-      spaceId: "mT6iLn6moinpH5zKYgH0",
-    },
-  },
-  {
-    id: "c6A5H2KxNA1poV4V1qtr",
-    url: "https://tabelog.com/hyogo/A2801/A280101/28061632/",
-    name: "title",
-    createdAt: "2023-12-12T16:05:56+09:00",
-    updatedAt: "2023-12-12T20:13:20+09:00",
-    lastUpdatedUser: {
-      name: "松本 亮太",
-      avatar:
-        "https://profile.line-scdn.net/0hCSDkoihVHHxpEjXXr1FiAxlCHxZKY0VuRHIGG15CQEhcIgh6RSNTEw4TRB9cdl4iQyYGGFsWSk9lAWsad0TgSG4iQU1VIVspQHdbkg",
-      userId: "U8c3fb9c7f335f1ed474271dd5ba0819c",
-      spaceId: "mT6iLn6moinpH5zKYgH0",
-    },
-  },
-  {
-    id: "qsgjS3zOkPELLRnHRODy",
-    createdAt: "2023-12-13T02:32:03+09:00",
-    name: "title200",
-    lastUpdatedUser: {
-      name: "松本 亮太",
-      avatar:
-        "https://profile.line-scdn.net/0hCSDkoihVHHxpEjXXr1FiAxlCHxZKY0VuRHIGG15CQEhcIgh6RSNTEw4TRB9cdl4iQyYGGFsWSk9lAWsad0TgSG4iQU1VIVspQHdbkg",
-      userId: "U8c3fb9c7f335f1ed474271dd5ba0819c",
-      spaceId: "mT6iLn6moinpH5zKYgH0",
-    },
-    url: null,
-    updatedAt: null,
-  },
-  {
-    id: "WnmR7jIzP2oPZQ7miZh4",
-    createdAt: "2023-12-13T02:03:48+09:00",
-    name: "title2",
-    url: null,
-    updatedAt: null,
-    lastUpdatedUser: {
-      name: "松本 亮太",
-      avatar:
-        "https://profile.line-scdn.net/0hCSDkoihVHHxpEjXXr1FiAxlCHxZKY0VuRHIGG15CQEhcIgh6RSNTEw4TRB9cdl4iQyYGGFsWSk9lAWsad0TgSG4iQU1VIVspQHdbkg",
-      userId: "U8c3fb9c7f335f1ed474271dd5ba0819c",
-      spaceId: "mT6iLn6moinpH5zKYgH0",
-    },
-  },
-  {
-    id: "QKSkJR678Iwr1L52nXT6",
-    createdAt: "2023-12-13T02:27:12+09:00",
-    name: "title2",
-    url: null,
-    updatedAt: null,
-    lastUpdatedUser: {
-      name: "松本 亮太",
-      avatar:
-        "https://profile.line-scdn.net/0hCSDkoihVHHxpEjXXr1FiAxlCHxZKY0VuRHIGG15CQEhcIgh6RSNTEw4TRB9cdl4iQyYGGFsWSk9lAWsad0TgSG4iQU1VIVspQHdbkg",
-      userId: "U8c3fb9c7f335f1ed474271dd5ba0819c",
-      spaceId: "mT6iLn6moinpH5zKYgH0",
-    },
-  },
-];
-
 export const Hub01Page = memo<Props>(({ liff }) => {
   const theme = useMantineTheme();
+  const [postModalOpened, { open: postModalOpen, close: postModalClose }] =
+    useDisclosure(false);
+  const [putModalOpened, { open: putModalOpen, close: putModalClose }] =
+    useDisclosure(false);
+  const [
+    deleteModalOpened,
+    { open: deleteModalOpen, close: deleteModalClose },
+  ] = useDisclosure(false);
+  const [targetId, setTargetId] = useState<null | string>(null);
+  const { data } = useFetchProfile({
+    accessToken: liff?.getAccessToken() as any,
+  });
+  const { data: hubData, isLoading } = useFetchHubData({
+    id: data?.spaceId,
+    hubId: "hub_01",
+    accessToken: liff?.getAccessToken() as any,
+  });
+  useEffect(() => {
+    if (!postModalOpened || !putModalOpened || !deleteModalOpened) {
+      setTargetId(null);
+    }
+  }, [postModalOpened, putModalOpened, deleteModalOpened]);
   return (
-    <Container py="md">
-      <HubTitle>行きたい場所</HubTitle>
-      <Stack>
-        {response.map((item) => (
-          <Stack
-            key={item.id}
-            style={{
-              border: "1px solid",
-              borderColor: theme.colors.gray[2],
-              borderRadius: theme.radius.sm,
-            }}
-            gap={4}
-            p="md"
-          >
-            <Text fw="bold">{item.name}</Text>
-            {item.url && (
-              <Link href={item.url} target="_blank" rel="noopener noreferrer">
-                {item.url}
-              </Link>
-            )}
-            <Text fz="xs" style={{ color: theme.colors.gray[6] }}>
-              {dayjs(item.updatedAt || item.createdAt).format(
-                "YYYY/MM/DD HH:mm"
+    <>
+      <Container pt="md" pb={100}>
+        <HubTitle>行きたい場所</HubTitle>
+        <Stack mt="md">
+          {isLoading ? (
+            <Center py="20vh">
+              <Loader />
+            </Center>
+          ) : (
+            <>
+              {hubData?.length ? (
+                hubData.map((item) => (
+                  <Stack
+                    key={item.id}
+                    style={{
+                      border: "1px solid",
+                      borderColor: theme.colors.gray[2],
+                      borderRadius: theme.radius.sm,
+                    }}
+                    gap={4}
+                    p="md"
+                  >
+                    <Text fw="bold">{item.name}</Text>
+                    {item.url && (
+                      <Link
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Text truncate>{item.url}</Text>
+                      </Link>
+                    )}
+                    <Text fz="xs" style={{ color: theme.colors.gray[6] }}>
+                      {dayjs(item.updatedAt || item.createdAt).format(
+                        "YYYY/MM/DD HH:mm"
+                      )}
+                    </Text>
+                    {item.lastUpdatedUser && (
+                      <Flex align="center" gap={4}>
+                        <Avatar src={item.lastUpdatedUser.avatar} size="xs" />
+                        <Text fz="xs">{item.lastUpdatedUser.name}</Text>
+                      </Flex>
+                    )}
+                    <Group justify="flex-end">
+                      <ActionIcon
+                        color="blue"
+                        radius="xl"
+                        size="lg"
+                        onClick={() => {
+                          putModalOpen();
+                          setTargetId(item.id);
+                        }}
+                      >
+                        <IoPencil />
+                      </ActionIcon>
+                      <ActionIcon
+                        color="red"
+                        radius="xl"
+                        size="lg"
+                        onClick={() => {
+                          deleteModalOpen();
+                          setTargetId(item.id);
+                        }}
+                      >
+                        <IoTrash />
+                      </ActionIcon>
+                    </Group>
+                  </Stack>
+                ))
+              ) : (
+                <Center py="20vh">
+                  <Text fz="sm" style={{ color: "gray.6" }}>
+                    まだ登録されていません
+                  </Text>
+                </Center>
               )}
-            </Text>
-            {item.lastUpdatedUser && (
-              <Flex align="center" gap={4}>
-                <Avatar src={item.lastUpdatedUser.avatar} size="xs" />
-                <Text fz="xs">{item.lastUpdatedUser.name}</Text>
-              </Flex>
-            )}
-          </Stack>
-        ))}
-      </Stack>
-      <FloatingAddButton
-        color={theme.colors.red[6]}
-        onClick={() => console.log("aaa")}
+            </>
+          )}
+        </Stack>
+        <FloatingAddButton
+          color={theme.colors.red[6]}
+          onClick={postModalOpen}
+        />
+      </Container>
+      <PostModal
+        opened={postModalOpened}
+        close={postModalClose}
+        id={data?.spaceId || ""}
+        hubId="hub_01"
+        accessToken={liff?.getAccessToken() as any}
       />
-    </Container>
+      <PutModal
+        opened={postModalOpened}
+        close={postModalClose}
+        id={data?.spaceId || ""}
+        hubId="hub_01"
+        accessToken={liff?.getAccessToken() as any}
+        defaultData={{
+          id: targetId || "",
+          name: hubData?.find((item) => item.id === targetId)?.name || "",
+          url: hubData?.find((item) => item.id === targetId)?.url || "",
+        }}
+      />
+      <DeleteModal
+        opened={deleteModalOpened}
+        close={deleteModalClose}
+        id={data?.spaceId || ""}
+        hubId="hub_01"
+        accessToken={liff?.getAccessToken() as any}
+        dataId={targetId || ""}
+      />
+    </>
   );
 });

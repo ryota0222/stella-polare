@@ -16,7 +16,7 @@ export const FloatingAddButton = memo<Props>(({ color, onClick }) => {
         onClick={onClick}
         color={color}
         radius={32}
-        style={{ boxShadow: "rgba(0, 0, 0, 0.125) 0px 8px 8px 4px" }}
+        style={{ boxShadow: "rgba(0, 0, 0, 0.125) 0px 8px 12px 2px" }}
       >
         <IoAdd color="#FFFFFF" style={{ width: rem(24), height: rem(24) }} />
       </ActionIcon>

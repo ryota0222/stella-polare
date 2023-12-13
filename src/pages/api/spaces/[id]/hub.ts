@@ -106,6 +106,18 @@ export default async function handler(
       docRef.update(body);
       return res.status(200).json({ message: "ok" });
     }
+    if (req.method === "DELETE") {
+      if (req.query.id === undefined) {
+        return res.status(400).json({ message: "id is missing" });
+      }
+      const docRef = db
+        .collection(COLLECTION_NAME)
+        .doc(req.query.id as string)
+        .collection(req.query.hubId as string)
+        .doc(req.query.dataId as string);
+      docRef.delete();
+      return res.status(200).json({ message: "ok" });
+    }
     res.status(200).json({ message: "ok" });
   } catch (err) {
     console.log(err);
