@@ -1,9 +1,21 @@
 import { APP_NAME } from "@/constant";
-import { Box, Image, Title, useMantineTheme } from "@mantine/core";
+import {
+  Box,
+  Button,
+  CopyButton,
+  Image,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
 import Link from "next/link";
 import { memo } from "react";
+import { Spacer } from "../Spacer";
 
-export const Header = memo(() => {
+interface Props {
+  accessToken: string | null;
+}
+
+export const Header = memo<Props>(({ accessToken }) => {
   const theme = useMantineTheme();
   return (
     <Box
@@ -21,6 +33,16 @@ export const Header = memo(() => {
         </Link>
       </Box>
       <Title size="h5">{APP_NAME}</Title>
+      <Spacer />
+      {accessToken && (
+        <CopyButton value={accessToken}>
+          {({ copied, copy }) => (
+            <Button color={copied ? "teal" : "blue"} onClick={copy} size="xs">
+              {copied ? "㊙️" : "👍"}
+            </Button>
+          )}
+        </CopyButton>
+      )}
     </Box>
   );
 });

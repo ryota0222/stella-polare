@@ -58,7 +58,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={{ ...theme, fontFamily: inter.style.fontFamily }}>
         <Notifications />
-        <Header />
+        <Header accessToken={liffObject ? liffObject.getAccessToken() : null} />
         <Wrapper accessToken={liffObject ? liffObject.getAccessToken() : null}>
           <Component {...pageProps} />
         </Wrapper>
@@ -71,25 +71,18 @@ interface Props {
   accessToken: string | null;
 }
 const Wrapper = memo<PropsWithChildren<Props>>(({ accessToken, children }) => {
-  const { data, error, isLoading } = useFetchProfile({
+  const { data, isLoading } = useFetchProfile({
     accessToken,
   });
   return (
     <>
-      <p>accessToken: {accessToken}</p>
-      {error && <p>error: {JSON.stringify(error)}</p>}
-      {data && <p>data: {JSON.stringify(data)}</p>}
-      {/* {isLoading ? (
+      {isLoading ? (
         <Center py="20vh">
           <Loader />
         </Center>
-      ) : ( */}
-      <>
-        {/* {data &&  */}
-        <>{children}</>
-        {/* } */}
-      </>
-      {/* )} */}
+      ) : (
+        <>{data && <>{children}</>}</>
+      )}
     </>
   );
 });
