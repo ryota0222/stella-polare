@@ -15,9 +15,7 @@ const Home: NextPage<{ liff: Liff | null; liffError: string | null }> = ({
         <title>{APP_NAME}</title>
       </Head>
       <main>
-        {/* {accessToken &&  */}
-        <HubScreen accessToken={accessToken} />
-        {/* } */}
+        {accessToken && <HubScreen accessToken={accessToken} />}
         {liffError && (
           <>
             <p>LIFF init failed.</p>

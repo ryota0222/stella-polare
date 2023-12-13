@@ -1,7 +1,7 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
 import client from "@/lib/axios";
-import { Profile } from "./useProfile";
+import { HubData } from "@/types";
 
 interface Params {
   id: string;
@@ -12,15 +12,6 @@ interface Params {
     url: string | null;
     hubId: string;
   };
-}
-
-export interface HubData {
-  id: string;
-  url: string | null;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date | null;
-  lastUpdatedUser: Profile;
 }
 
 export const putHubData = async (
