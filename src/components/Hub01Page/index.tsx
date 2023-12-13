@@ -47,7 +47,7 @@ export const Hub01Page = memo<Props>(({ liff }) => {
     accessToken: liff?.getAccessToken() as any,
   });
   useEffect(() => {
-    if (!postModalOpened || !putModalOpened || !deleteModalOpened) {
+    if (!postModalOpened && !putModalOpened && !deleteModalOpened) {
       setTargetId(null);
     }
   }, [postModalOpened, putModalOpened, deleteModalOpened]);
@@ -144,8 +144,8 @@ export const Hub01Page = memo<Props>(({ liff }) => {
         accessToken={liff?.getAccessToken() as any}
       />
       <PutModal
-        opened={postModalOpened}
-        close={postModalClose}
+        opened={putModalOpened}
+        close={putModalClose}
         id={data?.spaceId || ""}
         hubId="hub_01"
         accessToken={liff?.getAccessToken() as any}
