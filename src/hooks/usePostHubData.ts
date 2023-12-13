@@ -17,8 +17,7 @@ export const postHubData = async (
   params: Params
 ): Promise<HubData[] | undefined> => {
   if (params.accessToken) {
-    return await client.post(`/spaces/${params.id}/hub`, {
-      body: params.body,
+    return await client.post(`/spaces/${params.id}/hub`, params.body, {
       headers: {
         Authorization: `Bearer ${params.accessToken}`,
       },

@@ -18,8 +18,7 @@ export const putHubData = async (
   params: Params
 ): Promise<HubData[] | undefined> => {
   if (params.accessToken) {
-    return await client.put(`/spaces/${params.id}/hub`, {
-      body: params.body,
+    return await client.put(`/spaces/${params.id}/hub`, params.body, {
       headers: {
         Authorization: `Bearer ${params.accessToken}`,
       },
