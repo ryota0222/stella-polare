@@ -1,6 +1,6 @@
 import { Spacer } from "@/components/Spacer";
 import { Button, Modal, Stack, TextInput } from "@mantine/core";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { usePostHubData } from "@/hooks/usePostHubData";
 import { useQueryClient } from "@tanstack/react-query";
@@ -53,6 +53,11 @@ export const PostModal = memo<Props>(
       },
       [accessToken, hubId, id, mutation, close, queryClient]
     );
+    useEffect(() => {
+      if (!opened) {
+        form.reset();
+      }
+    }, [opened]);
     return (
       <Modal
         opened={opened}

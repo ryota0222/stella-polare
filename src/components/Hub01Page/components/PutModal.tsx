@@ -37,6 +37,11 @@ export const PutModal = memo<Props>(
         form.setFieldValue("url", defaultData.url);
       }
     }, [defaultData.name, defaultData.url]);
+    useEffect(() => {
+      if (!opened) {
+        form.reset();
+      }
+    }, [opened]);
     const handleSubmit = useCallback(
       (values: { name: string; url: string }) => {
         mutation.mutate(
