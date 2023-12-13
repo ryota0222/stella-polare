@@ -67,12 +67,16 @@ export const PostModal = memo<Props>(
               required
               label="名前"
               placeholder=""
+              size="lg"
+              style={{ fontSize: 16 }}
               {...form.getInputProps("name")}
             />
             <TextInput
               label="URL"
               type="url"
               placeholder=""
+              size="lg"
+              style={{ fontSize: 16 }}
               {...form.getInputProps("url")}
             />
             <Spacer />
