@@ -8,6 +8,9 @@ import {
   Stack,
   Text,
   Image,
+  useMantineTheme,
+  Loader,
+  Center,
 } from "@mantine/core";
 import { useRouter } from "next/router";
 import { memo, useEffect } from "react";
@@ -22,8 +25,12 @@ interface Props {
 
 export const HubScreen = memo<Props>(({ accessToken }) => {
   const router = useRouter();
+  const theme = useMantineTheme();
   const { data } = useFetchProfile({ accessToken });
-  const { data: space } = useFetchSpace({ id: data?.spaceId, accessToken });
+  const { data: space, isLoading } = useFetchSpace({
+    id: data?.spaceId,
+    accessToken,
+  });
   const [opened, { open, close }] = useDisclosure(false);
   useEffect(() => {
     if (data && !data.spaceId) {
@@ -33,33 +40,46 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
   return (
     <>
       <Container>
-        {space && (
-          <Flex py="md" gap="lg" justify="space-evenly">
-            {space.owner && (
-              <Stack gap={4} align="center">
-                <Avatar src={space.owner.avatar} size={64} />
-                <Text fz={12} style={{ textAlign: "center" }}>
-                  {space.owner.name}
-                </Text>
-              </Stack>
-            )}
-            {space.partner ? (
-              <Stack gap={4} align="center">
-                <Avatar src={space.partner?.avatar} size={64} />
-                <Text fz={12} style={{ textAlign: "center" }}>
-                  {space.partner.name}
-                </Text>
-              </Stack>
-            ) : (
-              <Stack gap={4} align="center" role="button" onClick={open}>
-                <Avatar size={64} />
-                <Text fz={12} style={{ textAlign: "center" }}>
-                  招待
-                </Text>
-              </Stack>
-            )}
-          </Flex>
-        )}
+        <Center
+          bg="gray.0"
+          h={120}
+          mt="lg"
+          style={{ borderRadius: theme.radius.md }}
+        >
+          {isLoading ? (
+            <Loader color="gray" type="dots" />
+          ) : (
+            <>
+              {space && (
+                <Flex py="md" gap="lg" justify="space-evenly">
+                  {space.owner && (
+                    <Stack gap={4} align="center">
+                      <Avatar src={space.owner.avatar} size={64} />
+                      <Text fz={12} style={{ textAlign: "center" }}>
+                        {space.owner.name}
+                      </Text>
+                    </Stack>
+                  )}
+                  {space.partner ? (
+                    <Stack gap={4} align="center">
+                      <Avatar src={space.partner?.avatar} size={64} />
+                      <Text fz={12} style={{ textAlign: "center" }}>
+                        {space.partner.name}
+                      </Text>
+                    </Stack>
+                  ) : (
+                    <Stack gap={4} align="center" role="button" onClick={open}>
+                      <Avatar size={64} />
+                      <Text fz={12} style={{ textAlign: "center" }}>
+                        招待
+                      </Text>
+                    </Stack>
+                  )}
+                </Flex>
+              )}
+            </>
+          )}
+        </Center>
         <Flex wrap="wrap" justify="space-around" gap="md" mt="md">
           {HUB_LIST.map((item) => (
             <Box key={item.id} w="45%">

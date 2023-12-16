@@ -21,6 +21,7 @@ export const Header = memo<Props>(({ accessToken }) => {
     <Box
       component="header"
       py={8}
+      px="md"
       style={{
         display: "flex",
         alignItems: "center",
@@ -29,10 +30,18 @@ export const Header = memo<Props>(({ accessToken }) => {
     >
       <Box w={40} h={40}>
         <Link href="/">
-          <Image src="/logo.png" width={40} height={40} alt="ロゴ" />
+          <Image
+            src="/logo.png"
+            width={40}
+            height={40}
+            alt="ロゴ"
+            style={{ borderRadius: 20 }}
+          />
         </Link>
       </Box>
-      <Title size="h5">{APP_NAME}</Title>
+      <Title ml="sm" size="h5">
+        {APP_NAME}
+      </Title>
       <Spacer />
       {accessToken && (
         <CopyButton value={accessToken}>
