@@ -7,6 +7,8 @@ export default function Document() {
       <Head>
         <ColorSchemeScript defaultColorScheme="auto" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta property="og:image" content="/thumbnail.png" />
+        <meta property="og:site_name" content="Stella Polare" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
