@@ -91,6 +91,7 @@ export const PutModal = memo<Props>(
               {...form.getInputProps("name")}
             />
             <TextInput
+              required
               label="URL"
               type="url"
               placeholder=""

@@ -1,4 +1,4 @@
-import { Box, Center, Text, useMantineTheme } from "@mantine/core";
+import { Box, Text, useMantineTheme } from "@mantine/core";
 import { memo, useCallback } from "react";
 import { IHubItem } from "./types";
 import { useRouter } from "next/router";

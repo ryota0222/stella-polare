@@ -76,6 +76,7 @@ export const PostModal = memo<Props>(
               {...form.getInputProps("name")}
             />
             <TextInput
+              required
               label="URL"
               type="url"
               placeholder=""

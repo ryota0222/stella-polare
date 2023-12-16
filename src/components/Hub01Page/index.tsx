@@ -1,28 +1,22 @@
 import { Liff } from "@line/liff";
 import {
-  ActionIcon,
-  Avatar,
   Center,
   Container,
-  Flex,
-  Group,
   Loader,
   Stack,
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { memo, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { HubTitle } from "../HubTitle";
 import { FloatingAddButton } from "../FloatingAddButton";
-import dayjs from "@/lib/dayjs";
-import Link from "next/link";
 import { useFetchHubData } from "@/hooks/useHubData";
 import { useFetchProfile } from "@/hooks/useProfile";
 import { useDisclosure } from "@mantine/hooks";
-import { IoPencil, IoTrash } from "react-icons/io5";
 import { PostModal } from "./components/PostModal";
 import { PutModal } from "./components/PutModal";
 import { DeleteModal } from "./components/DeleteModal";
+import { HubItem } from "./components/HubItem";
 interface Props {
   liff: Liff | null;
 }
@@ -39,12 +33,12 @@ export const Hub01Page = memo<Props>(({ liff }) => {
   ] = useDisclosure(false);
   const [targetId, setTargetId] = useState<null | string>(null);
   const { data } = useFetchProfile({
-    accessToken: liff?.getAccessToken() as any,
+    accessToken: liff?.getAccessToken() || "",
   });
   const { data: hubData, isLoading } = useFetchHubData({
     id: data?.spaceId,
     hubId: "hub_01",
-    accessToken: liff?.getAccessToken() as any,
+    accessToken: liff?.getAccessToken() || "",
   });
   useEffect(() => {
     if (!postModalOpened && !putModalOpened && !deleteModalOpened) {
@@ -64,62 +58,24 @@ export const Hub01Page = memo<Props>(({ liff }) => {
             <>
               {hubData?.length ? (
                 hubData.map((item) => (
-                  <Stack
-                    key={item.id}
-                    style={{
-                      border: "1px solid",
-                      borderColor: theme.colors.gray[2],
-                      borderRadius: theme.radius.sm,
-                    }}
-                    gap={4}
-                    p="md"
-                  >
-                    <Text fw="bold">{item.name}</Text>
-                    {item.url && (
-                      <Link
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Text truncate>{item.url}</Text>
-                      </Link>
-                    )}
-                    <Text fz="xs" style={{ color: theme.colors.gray[6] }}>
-                      {dayjs(item.updatedAt || item.createdAt).format(
-                        "YYYY/MM/DD HH:mm"
-                      )}
-                    </Text>
-                    {item.lastUpdatedUser && (
-                      <Flex align="center" gap={4}>
-                        <Avatar src={item.lastUpdatedUser.avatar} size="xs" />
-                        <Text fz="xs">{item.lastUpdatedUser.name}</Text>
-                      </Flex>
-                    )}
-                    <Group justify="flex-end">
-                      <ActionIcon
-                        color="blue"
-                        radius="xl"
-                        size="lg"
-                        onClick={() => {
-                          putModalOpen();
-                          setTargetId(item.id);
-                        }}
-                      >
-                        <IoPencil />
-                      </ActionIcon>
-                      <ActionIcon
-                        color="red"
-                        radius="xl"
-                        size="lg"
-                        onClick={() => {
-                          deleteModalOpen();
-                          setTargetId(item.id);
-                        }}
-                      >
-                        <IoTrash />
-                      </ActionIcon>
-                    </Group>
-                  </Stack>
+                  <Fragment key={item.id}>
+                    <HubItem
+                      id={item.id}
+                      name={item.name}
+                      url={item.url}
+                      lastUpdatedUser={item.lastUpdatedUser}
+                      updatedAt={item.updatedAt}
+                      createdAt={item.createdAt}
+                      handleEdit={(id) => {
+                        setTargetId(id);
+                        putModalOpen();
+                      }}
+                      handleDelete={(id) => {
+                        setTargetId(id);
+                        deleteModalOpen();
+                      }}
+                    />
+                  </Fragment>
                 ))
               ) : (
                 <Center py="20vh">
@@ -141,14 +97,14 @@ export const Hub01Page = memo<Props>(({ liff }) => {
         close={postModalClose}
         id={data?.spaceId || ""}
         hubId="hub_01"
-        accessToken={liff?.getAccessToken() as any}
+        accessToken={liff?.getAccessToken() || ""}
       />
       <PutModal
         opened={putModalOpened}
         close={putModalClose}
         id={data?.spaceId || ""}
         hubId="hub_01"
-        accessToken={liff?.getAccessToken() as any}
+        accessToken={liff?.getAccessToken() || ""}
         defaultData={{
           id: targetId || "",
           name: hubData?.find((item) => item.id === targetId)?.name || "",
@@ -160,7 +116,7 @@ export const Hub01Page = memo<Props>(({ liff }) => {
         close={deleteModalClose}
         id={data?.spaceId || ""}
         hubId="hub_01"
-        accessToken={liff?.getAccessToken() as any}
+        accessToken={liff?.getAccessToken() || ""}
         dataId={targetId || ""}
       />
     </>
