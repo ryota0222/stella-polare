@@ -51,9 +51,7 @@ export const HubItem = memo<Props>(
           { url },
           {
             onSuccess: (data) => {
-              if (Object.keys(data).length > 0) {
-                setData(data);
-              }
+              setData(data);
             },
           }
         );
@@ -80,7 +78,7 @@ export const HubItem = memo<Props>(
         </Box>
       );
     }
-    if (data) {
+    if (data !== null) {
       return (
         <Box
           style={{
