@@ -91,7 +91,7 @@ export default async function handler(
       const LINE_MESSAGING_API = "https://api.line.me/v2/bot/message";
       const LINE_HEADER = {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${req.headers.authorization.split(" ")[1]}`,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_CHANNEL_ACCESS_TOKEN}`,
       };
       axios({
         method: "post",
