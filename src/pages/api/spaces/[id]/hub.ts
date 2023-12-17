@@ -4,6 +4,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { serviceAccount } from "@/lib/firebase-admin";
 import admin from "firebase-admin";
 import dayjs from "@/lib/dayjs";
+import axios from "axios";
 
 export default async function handler(
   req: NextApiRequest,
@@ -86,6 +87,25 @@ export default async function handler(
         .doc(req.query.id as string)
         .collection(req.body.hubId);
       docRef.add(body);
+
+      const LINE_MESSAGING_API = "https://api.line.me/v2/bot/message";
+      const LINE_HEADER = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.headers.authorization.split(" ")[1]}`,
+      };
+      axios({
+        method: "post",
+        url: `${LINE_MESSAGING_API}/multicast`,
+        headers: LINE_HEADER,
+        data: {
+          // TODO: owner
+          to: [profile.userId],
+          messages: `${profile.name}さんがデータを登録しました。
+カテゴリ：${req.body.hubId}
+タイトル：${req.body.name}`,
+        },
+      });
+
       return res.status(200).json(body);
     }
     if (req.method === "PUT") {
