@@ -45,8 +45,8 @@ export default async function handler(
       return res.status(400).json({ message: "spaceId is missing" });
     }
     // スペースのデータを取得
-    const docRef = await db.collection(COLLECTION_NAME).doc(req.query.id).get();
-    const space = docRef.data();
+    const doc = await db.collection(COLLECTION_NAME).doc(req.query.id).get();
+    const space = doc.data();
     if (req.method === "GET") {
       if (typeof req.query.hub_id !== "string") {
         return res.status(400).json({ message: "hubId is missing" });
@@ -99,13 +99,17 @@ export default async function handler(
       // LINE messaging APIで送信
       const to = [profile.userId];
       if (space?.partner) {
-        const partnerId = space.partner.split("/")[1];
+        const partner = await space.partner.get();
+        const partnerData = partner.data();
+        const partnerId = partnerData.userId;
         if (!to.includes(partnerId)) {
           to.push(partnerId);
         }
       }
       if (space?.owner) {
-        const ownerId = space.owner.split("/")[1];
+        const owner = await space.owner.get();
+        const ownerData = owner.data();
+        const ownerId = ownerData.userId;
         if (!to.includes(ownerId)) {
           to.push(ownerId);
         }
