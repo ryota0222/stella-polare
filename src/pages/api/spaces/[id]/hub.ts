@@ -44,13 +44,13 @@ export default async function handler(
     if (typeof req.query.id !== "string") {
       return res.status(400).json({ message: "spaceId is missing" });
     }
-    if (typeof req.query.hub_id !== "string") {
-      return res.status(400).json({ message: "hubId is missing" });
-    }
     // スペースのデータを取得
     const docRef = await db.collection(COLLECTION_NAME).doc(req.query.id).get();
     const space = docRef.data();
     if (req.method === "GET") {
+      if (typeof req.query.hub_id !== "string") {
+        return res.status(400).json({ message: "hubId is missing" });
+      }
       const snapshot = await db
         .collection(COLLECTION_NAME)
         .doc(req.query.id)
