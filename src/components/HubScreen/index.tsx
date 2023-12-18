@@ -40,19 +40,19 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
   }, [data]);
   return (
     <>
-      <Container>
-        <Center
-          bg="gray.0"
-          h={120}
-          mt="lg"
-          style={{ borderRadius: theme.radius.md }}
-        >
-          {isLoading ? (
+      <Box bg="gray.0" h={160} mb="lg">
+        {isLoading ? (
+          <Center h="100%">
             <Loader color="gray" type="dots" />
-          ) : (
-            <>
-              {space && (
-                <Flex py="md" gap="lg" justify="space-evenly">
+          </Center>
+        ) : (
+          <>
+            {space && (
+              <Container pos="relative" h="100%">
+                <Text fz="xs" pt="sm" fw="bold" style={{ textAlign: "center" }}>
+                  このスペースを閲覧できるユーザー
+                </Text>
+                <Flex pt="sm" gap="lg" justify="center">
                   {space.owner && (
                     <Stack gap={4} align="center">
                       <Avatar src={space.owner.avatar} size={64} />
@@ -77,10 +77,23 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
                     </Stack>
                   )}
                 </Flex>
-              )}
-            </>
-          )}
-        </Center>
+                <Image
+                  src="/users-illust.webp"
+                  alt="イラスト"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    bottom: 0,
+                    width: 80,
+                    height: 80,
+                  }}
+                />
+              </Container>
+            )}
+          </>
+        )}
+      </Box>
+      <Container>
         <Flex wrap="wrap" justify="space-around" gap="md" mt="md">
           {HUB_LIST.map((item) => (
             <Box key={item.id} w="45%">

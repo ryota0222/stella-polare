@@ -66,14 +66,16 @@ export const PostModal = memo<Props>(
         fullScreen
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack mih="calc(100dvh - 76px)">
+          <Stack mih="calc(100dvh - 76px)" pb={40}>
             <TextInput
               data-autofocus
               required
               label="名前"
               placeholder=""
               size="lg"
-              style={{ fontSize: 16 }}
+              style={{
+                fontSize: 16,
+              }}
               {...form.getInputProps("name")}
             />
             <TextInput
@@ -86,11 +88,18 @@ export const PostModal = memo<Props>(
               {...form.getInputProps("url")}
             />
             <Spacer />
-            <Button type="submit" loading={mutation.isPending}>
+            <Button
+              type="submit"
+              size="lg"
+              radius={99}
+              loading={mutation.isPending}
+            >
               追加
             </Button>
             <Button
               variant="subtle"
+              size="lg"
+              radius={99}
               onClick={close}
               disabled={mutation.isPending}
             >

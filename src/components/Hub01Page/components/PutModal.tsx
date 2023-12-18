@@ -80,7 +80,7 @@ export const PutModal = memo<Props>(
         fullScreen
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack mih="calc(100dvh - 76px)">
+          <Stack mih="calc(100dvh - 76px)" pb={40}>
             <TextInput
               data-autofocus
               required
@@ -100,11 +100,18 @@ export const PutModal = memo<Props>(
               {...form.getInputProps("url")}
             />
             <Spacer />
-            <Button type="submit" loading={mutation.isPending}>
+            <Button
+              type="submit"
+              size="lg"
+              radius={99}
+              loading={mutation.isPending}
+            >
               更新
             </Button>
             <Button
               variant="subtle"
+              size="lg"
+              radius={99}
               onClick={close}
               disabled={mutation.isPending}
             >
