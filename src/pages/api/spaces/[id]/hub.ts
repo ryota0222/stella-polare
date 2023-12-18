@@ -41,13 +41,16 @@ export default async function handler(
       });
     }
     const db = getFirestore();
+    if (typeof req.query.id !== "string") {
+      return res.status(400).json({ message: "spaceId is missing" });
+    }
+    if (typeof req.query.hub_id !== "string") {
+      return res.status(400).json({ message: "hubId is missing" });
+    }
+    // スペースのデータを取得
+    const docRef = await db.collection(COLLECTION_NAME).doc(req.query.id).get();
+    const space = docRef.data();
     if (req.method === "GET") {
-      if (typeof req.query.id !== "string") {
-        return res.status(400).json({ message: "spaceId is missing" });
-      }
-      if (typeof req.query.hub_id !== "string") {
-        return res.status(400).json({ message: "hubId is missing" });
-      }
       const snapshot = await db
         .collection(COLLECTION_NAME)
         .doc(req.query.id)
@@ -93,16 +96,34 @@ export default async function handler(
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_CHANNEL_ACCESS_TOKEN}`,
       };
+      // LINE messaging APIで送信
+      const to = [profile.userId];
+      if (space?.partner) {
+        const partnerId = space.partner.split("/")[1];
+        if (!to.includes(partnerId)) {
+          to.push(partnerId);
+        }
+      }
+      if (space?.owner) {
+        const ownerId = space.owner.split("/")[1];
+        if (!to.includes(ownerId)) {
+          to.push(ownerId);
+        }
+      }
       axios({
         method: "post",
         url: `${LINE_MESSAGING_API}/multicast`,
         headers: LINE_HEADER,
         data: {
-          // TODO: owner
-          to: [profile.userId],
-          messages: `${profile.name}さんがデータを登録しました。
+          to,
+          messages: [
+            {
+              type: "text",
+              text: `${profile.name}さんがデータを登録しました。
 カテゴリ：${req.body.hubId}
 タイトル：${req.body.name}`,
+            },
+          ],
         },
       });
 
