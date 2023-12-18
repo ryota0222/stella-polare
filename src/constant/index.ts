@@ -1,1 +1,1 @@
-export const APP_NAME = "Stella Polare";
+export const APP_NAME = "POLARIS";

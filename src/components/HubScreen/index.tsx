@@ -18,6 +18,7 @@ import { HUB_LIST } from "../HubItem/constant";
 import { HubItem } from "../HubItem";
 import { useFetchSpace } from "@/hooks/useSpace";
 import { useDisclosure } from "@mantine/hooks";
+import { APP_NAME } from "@/constant";
 
 interface Props {
   accessToken: string;
@@ -88,7 +89,7 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
           ))}
         </Flex>
       </Container>
-      <Modal opened={opened} onClose={close} title="Stella Polareを共有">
+      <Modal opened={opened} onClose={close} title={`${APP_NAME}を共有`}>
         <Image
           src="https://qr-official.line.me/sid/L/087eheli.png"
           alt="QRコード"
