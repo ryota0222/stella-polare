@@ -5,6 +5,7 @@ import { serviceAccount } from "@/lib/firebase-admin";
 import admin from "firebase-admin";
 import dayjs from "@/lib/dayjs";
 import axios from "axios";
+import { HUB_LIST } from "@/components/HubItem/constant";
 
 export default async function handler(
   req: NextApiRequest,
@@ -123,8 +124,8 @@ export default async function handler(
           messages: [
             {
               type: "text",
-              text: `${profile.name}さんがデータを登録しました。
-カテゴリ：${req.body.hubId}
+              text: `${profile.displayName}さんがデータを登録しました。
+カテゴリ：${HUB_LIST.find((hub) => hub.id === req.body.hubId)?.title || ""}
 タイトル：${req.body.name}`,
             },
           ],
