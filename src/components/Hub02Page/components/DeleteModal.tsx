@@ -32,7 +32,7 @@ export const DeleteModal = memo<Props>(
             });
             notifications.show({
               title: "成功",
-              message: "メモを削除しました",
+              message: "食べたいものを削除しました",
               autoClose: 5000,
             });
             close();
@@ -41,7 +41,12 @@ export const DeleteModal = memo<Props>(
       );
     }, [accessToken, hubId, id, mutation, close, queryClient, dataId]);
     return (
-      <Modal opened={opened} onClose={close} title="メモを削除" centered>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="食べたいものを削除"
+        centered
+      >
         <Stack>
           <Button
             color="red"

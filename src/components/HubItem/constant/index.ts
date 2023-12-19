@@ -20,7 +20,7 @@ export const HUB_LIST: IHubItem[] = [
     id: "hub_02",
     title: "食べたいもの",
     color: "pink",
-    isComingSoon: true,
+    isComingSoon: false,
     icon: PiForkKnifeFill,
   },
   {

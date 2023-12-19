@@ -80,7 +80,7 @@ export default async function handler(
     }
     if (req.method === "POST") {
       let body = null;
-      if (req.body.hubId === "hub_01") {
+      if (["hub_01", "hub_02"].includes(req.body.hubId)) {
         body = {
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -141,7 +141,7 @@ export default async function handler(
               type: "text",
               text: `${profile.displayName}さんがデータを登録しました。
 カテゴリ：${HUB_LIST.find((hub) => hub.id === req.body.hubId)?.title || ""}
-タイトル：${req.body.name}`,
+タイトル：${req.body.name || req.body.name || req.body.title || ""}`,
             },
           ],
         },
