@@ -52,6 +52,8 @@ export const DeleteModal = memo<Props>(
             color="red"
             onClick={handleSubmit}
             loading={mutation.isPending}
+            size="lg"
+            radius={99}
           >
             削除
           </Button>
@@ -59,6 +61,8 @@ export const DeleteModal = memo<Props>(
             variant="subtle"
             onClick={close}
             disabled={mutation.isPending}
+            size="lg"
+            radius={99}
           >
             キャンセル
           </Button>

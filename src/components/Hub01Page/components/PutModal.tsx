@@ -105,6 +105,7 @@ export const PutModal = memo<Props>(
               size="lg"
               radius={99}
               loading={mutation.isPending}
+              color="dark"
             >
               更新
             </Button>
@@ -114,6 +115,7 @@ export const PutModal = memo<Props>(
               radius={99}
               onClick={close}
               disabled={mutation.isPending}
+              color="dark"
             >
               キャンセル
             </Button>

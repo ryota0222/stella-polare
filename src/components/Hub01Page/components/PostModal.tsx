@@ -93,6 +93,7 @@ export const PostModal = memo<Props>(
               size="lg"
               radius={99}
               loading={mutation.isPending}
+              color="dark"
             >
               追加
             </Button>
@@ -102,6 +103,7 @@ export const PostModal = memo<Props>(
               radius={99}
               onClick={close}
               disabled={mutation.isPending}
+              color="dark"
             >
               キャンセル
             </Button>

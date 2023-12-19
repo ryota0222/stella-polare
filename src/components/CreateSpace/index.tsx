@@ -97,7 +97,8 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
   return (
     <>
       <Container
-        py="md"
+        pt="md"
+        pb={40}
         mih="calc(100dvh - 58px)"
         style={{ display: "flex", flexDirection: "column" }}
       >
@@ -106,7 +107,13 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
           <Text fw="bold">{(data as any)?.name}</Text>
         </Stack>
         <Spacer />
-        <Button fullWidth onClick={joinModalOpen}>
+        <Button
+          fullWidth
+          onClick={joinModalOpen}
+          size="lg"
+          radius={99}
+          color="dark"
+        >
           スペースに参加
         </Button>
         <Button
@@ -114,7 +121,10 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
           mt="md"
           variant="outline"
           mb={40}
+          size="lg"
+          radius={99}
           onClick={createModalOpen}
+          color="dark"
         >
           スペースの作成
         </Button>
@@ -130,7 +140,13 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
             {...form.getInputProps("password")}
           />
           <Group justify="flex-end" mt="md">
-            <Button type="submit" loading={pending}>
+            <Button
+              type="submit"
+              loading={pending}
+              size="lg"
+              radius={99}
+              color="dark"
+            >
               {joinModalOpened ? "参加" : "作成"}
             </Button>
           </Group>

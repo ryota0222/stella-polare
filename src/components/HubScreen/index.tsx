@@ -40,7 +40,7 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
   }, [data]);
   return (
     <>
-      <Box bg="gray.0" h={160} mb="lg">
+      <Box bg="gray.0" h={140} mb="lg">
         {isLoading ? (
           <Center h="100%">
             <Loader color="gray" type="dots" />
