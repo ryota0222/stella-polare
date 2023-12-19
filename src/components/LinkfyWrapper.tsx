@@ -14,7 +14,9 @@ export const LinkifyWrapper = memo<PropsWithChildren>(({ children }) => {
   );
   return (
     <Linkify componentDecorator={componentDecorator}>
-      <Text style={{ whiteSpace: "pre-wrap" }}>{children}</Text>
+      <Text style={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
+        {children}
+      </Text>
     </Linkify>
   );
 });

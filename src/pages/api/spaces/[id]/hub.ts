@@ -79,13 +79,28 @@ export default async function handler(
       return res.status(200).json(data);
     }
     if (req.method === "POST") {
-      const body = {
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        lastUpdatedUser: db.collection("users").doc(profile.userId),
-        name: req.body.name,
-        url: req.body.url || null,
-      };
+      let body = null;
+      if (req.body.hubId === "hub_01") {
+        body = {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastUpdatedUser: db.collection("users").doc(profile.userId),
+          name: req.body.name,
+          url: req.body.url || null,
+        };
+      }
+      if (req.body.hubId === "hub_08") {
+        body = {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastUpdatedUser: db.collection("users").doc(profile.userId),
+          title: req.body.title,
+          description: req.body.description,
+        };
+      }
+      if (!body) {
+        return res.status(400).json({ message: "hubId is missing" });
+      }
       const docRef = db
         .collection(COLLECTION_NAME)
         .doc(req.query.id as string)

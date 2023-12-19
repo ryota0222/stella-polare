@@ -75,7 +75,7 @@ export const PutModal = memo<Props>(
     return (
       <Modal opened={opened} onClose={close} title="メモの更新" fullScreen>
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack mih="calc(100dvh - 76px)" pb={40}>
+          <Stack mih="calc(100dvh - 76px)" pb={16}>
             <TextInput
               data-autofocus
               required

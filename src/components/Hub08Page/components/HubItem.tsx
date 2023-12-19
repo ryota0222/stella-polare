@@ -1,4 +1,5 @@
-import { usePostOgpData } from "@/hooks/usePostOgpData";
+import { LinkifyWrapper } from "@/components/LinkfyWrapper";
+import { Spacer } from "@/components/Spacer";
 import { Profile } from "@/hooks/useProfile";
 import {
   ActionIcon,
@@ -6,19 +7,18 @@ import {
   Box,
   Flex,
   Group,
-  Image,
-  Skeleton,
+  Spoiler,
   Text,
   useMantineTheme,
 } from "@mantine/core";
 import dayjs from "dayjs";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo } from "react";
 import { IoPencil, IoTrash } from "react-icons/io5";
 
 interface Props {
   id: string;
-  name: string;
-  url: string;
+  title: string;
+  description: string;
   lastUpdatedUser?: Profile;
   updatedAt: Date | null;
   createdAt: Date;
@@ -29,114 +29,69 @@ interface Props {
 export const HubItem = memo<Props>(
   ({
     id,
-    name,
-    url,
+    title,
+    description,
     lastUpdatedUser,
     updatedAt,
     createdAt,
     handleEdit,
     handleDelete,
   }) => {
-    const mutation = usePostOgpData({});
     const theme = useMantineTheme();
-    const [data, setData] = useState<{
-      [key: string]: string | undefined;
-    } | null>(null);
-    const handleWholeClick = useCallback(() => {
-      window.open(url, "_blank");
-    }, [url]);
-    useEffect(() => {
-      if (url) {
-        mutation.mutate(
-          { url },
-          {
-            onSuccess: (data) => {
-              setData(data);
-            },
-          }
-        );
-      }
-    }, [url]);
-    if (mutation.isPending) {
-      return (
-        <Box
-          style={{
-            border: `solid 1px ${theme.colors.gray[3]}`,
-            borderRadius: theme.radius.md,
-            overflow: "hidden",
-          }}
-        >
-          <Skeleton visible h={200} />
-          <Box p="md">
-            <Skeleton visible height={20} />
-            <Skeleton visible width={120} height={20} mt={4} mb={8} />
-            <Flex align="center" gap={6}>
-              <Skeleton circle visible w={32} h={32} />
-              <Skeleton visible width={80} height={20} />
-            </Flex>
-          </Box>
-        </Box>
-      );
-    }
-    if (data !== null) {
-      return (
-        <Box
-          style={{
-            border: `solid 1px ${theme.colors.gray[3]}`,
-            borderRadius: theme.radius.md,
-            overflow: "hidden",
-          }}
-          onClick={handleWholeClick}
-        >
-          {data["og:image"] && (
-            <Image
-              src={data["og:image"]}
-              alt="サムネイル"
-              h={200}
-              style={{ borderBottom: `solid 1px ${theme.colors.gray[3]}` }}
-            />
-          )}
-          <Box p="md">
-            <Text fw="bold" fz="lg">
-              {name}
-            </Text>
-            <Text fz="sm" mt={4} mb={8} style={{ color: theme.colors.gray[6] }}>
-              {dayjs(updatedAt || createdAt).format("YYYY/MM/DD HH:mm")}
-            </Text>
+    return (
+      <Box
+        style={{
+          border: `solid 1px ${theme.colors.gray[3]}`,
+          borderRadius: theme.radius.md,
+        }}
+      >
+        <Box p="md">
+          <Text fw="bold" fz="lg">
+            {title}
+          </Text>
+          <Flex>
             {lastUpdatedUser && (
               <Flex align="center" gap={6}>
                 <Avatar src={lastUpdatedUser.avatar} size="sm" />
                 <Text fz="sm">{lastUpdatedUser.name}</Text>
               </Flex>
             )}
-            <Group justify="flex-end">
-              <ActionIcon
-                color="blue"
-                radius="xl"
-                size="lg"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEdit(id);
-                }}
-              >
-                <IoPencil />
-              </ActionIcon>
-              <ActionIcon
-                color="red"
-                radius="xl"
-                size="lg"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(id);
-                }}
-              >
-                <IoTrash />
-              </ActionIcon>
-            </Group>
+            <Spacer />
+            <Text fz="sm" mt={4} mb={8} style={{ color: theme.colors.gray[6] }}>
+              {dayjs(updatedAt || createdAt).format("YYYY/MM/DD HH:mm")}
+            </Text>
+          </Flex>
+          <Box my="xs">
+            <Spoiler maxHeight={64} showLabel="もっと見る" hideLabel="閉じる">
+              <LinkifyWrapper>{description}</LinkifyWrapper>
+            </Spoiler>
           </Box>
+          <Group justify="flex-end">
+            <ActionIcon
+              color="blue"
+              radius="xl"
+              size="lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(id);
+              }}
+            >
+              <IoPencil />
+            </ActionIcon>
+            <ActionIcon
+              color="red"
+              radius="xl"
+              size="lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(id);
+              }}
+            >
+              <IoTrash />
+            </ActionIcon>
+          </Group>
         </Box>
-      );
-    }
-    return <></>;
+      </Box>
+    );
   }
 );

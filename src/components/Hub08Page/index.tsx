@@ -1,6 +1,5 @@
 import { Liff } from "@line/liff";
 import {
-  Box,
   Center,
   Container,
   Loader,
@@ -17,8 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { PostModal } from "./components/PostModal";
 import { PutModal } from "./components/PutModal";
 import { DeleteModal } from "./components/DeleteModal";
-import { LinkifyWrapper } from "../LinkfyWrapper";
-// import { HubItem } from "./components/HubItem";
+import { HubItem } from "./components/HubItem";
 interface Props {
   liff: Liff | null;
 }
@@ -61,10 +59,10 @@ export const Hub08Page = memo<Props>(({ liff }) => {
               {hubData?.length ? (
                 hubData.map((item) => (
                   <Fragment key={item.id}>
-                    {/* <HubItem
+                    <HubItem
                       id={item.id}
-                      name={item.name}
-                      url={item.url}
+                      title={item?.title || ""}
+                      description={item?.description || ""}
                       lastUpdatedUser={item.lastUpdatedUser}
                       updatedAt={item.updatedAt}
                       createdAt={item.createdAt}
@@ -76,11 +74,7 @@ export const Hub08Page = memo<Props>(({ liff }) => {
                         setTargetId(id);
                         deleteModalOpen();
                       }}
-                    /> */}
-                    <Box>
-                      <Text>{item.title}</Text>
-                      <LinkifyWrapper>{item.description}</LinkifyWrapper>
-                    </Box>
+                    />
                   </Fragment>
                 ))
               ) : (
