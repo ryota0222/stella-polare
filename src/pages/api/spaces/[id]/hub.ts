@@ -7,6 +7,12 @@ import dayjs from "@/lib/dayjs";
 import axios from "axios";
 import { HUB_LIST } from "@/components/HubItem/constant";
 
+const LINE_MESSAGING_API = "https://api.line.me/v2/bot/message";
+const LINE_HEADER = {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${process.env.NEXT_PUBLIC_CHANNEL_ACCESS_TOKEN}`,
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -107,11 +113,6 @@ export default async function handler(
         .collection(req.body.hubId);
       docRef.add(body);
 
-      const LINE_MESSAGING_API = "https://api.line.me/v2/bot/message";
-      const LINE_HEADER = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_CHANNEL_ACCESS_TOKEN}`,
-      };
       // LINE messaging APIで送信
       const to = [profile.userId];
       if (space?.partner) {
@@ -165,6 +166,42 @@ export default async function handler(
         .collection(req.body.hubId)
         .doc(req.body.id);
       docRef.update(body);
+
+      // LINE messaging APIで送信
+      const to = [profile.userId];
+      if (space?.partner) {
+        const partner = await space.partner.get();
+        const partnerData = partner.data();
+        const partnerId = partnerData.userId;
+        if (!to.includes(partnerId)) {
+          to.push(partnerId);
+        }
+      }
+      if (space?.owner) {
+        const owner = await space.owner.get();
+        const ownerData = owner.data();
+        const ownerId = ownerData.userId;
+        if (!to.includes(ownerId)) {
+          to.push(ownerId);
+        }
+      }
+      axios({
+        method: "post",
+        url: `${LINE_MESSAGING_API}/multicast`,
+        headers: LINE_HEADER,
+        data: {
+          to,
+          messages: [
+            {
+              type: "text",
+              text: `${profile.displayName}さんがデータを更新しました。
+カテゴリ：${HUB_LIST.find((hub) => hub.id === req.body.hubId)?.title || ""}
+タイトル：${req.body.name || req.body.name || req.body.title || ""}`,
+            },
+          ],
+        },
+      });
+
       return res.status(200).json({ message: "ok" });
     }
     if (req.method === "DELETE") {
@@ -177,6 +214,42 @@ export default async function handler(
         .collection(req.query.hubId as string)
         .doc(req.query.dataId as string);
       docRef.delete();
+
+      // LINE messaging APIで送信
+      const to = [profile.userId];
+      if (space?.partner) {
+        const partner = await space.partner.get();
+        const partnerData = partner.data();
+        const partnerId = partnerData.userId;
+        if (!to.includes(partnerId)) {
+          to.push(partnerId);
+        }
+      }
+      if (space?.owner) {
+        const owner = await space.owner.get();
+        const ownerData = owner.data();
+        const ownerId = ownerData.userId;
+        if (!to.includes(ownerId)) {
+          to.push(ownerId);
+        }
+      }
+      axios({
+        method: "post",
+        url: `${LINE_MESSAGING_API}/multicast`,
+        headers: LINE_HEADER,
+        data: {
+          to,
+          messages: [
+            {
+              type: "text",
+              text: `${profile.displayName}さんが「${
+                HUB_LIST.find((hub) => hub.id === req.body.hubId)?.title || ""
+              }」のデータを削除しました。`,
+            },
+          ],
+        },
+      });
+
       return res.status(200).json({ message: "ok" });
     }
     res.status(200).json({ message: "ok" });

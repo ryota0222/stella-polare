@@ -62,7 +62,7 @@ export const HubItem = memo<Props>(
             </Text>
           </Flex>
           <Box my="xs">
-            <Spoiler maxHeight={64} showLabel="もっと見る" hideLabel="閉じる">
+            <Spoiler maxHeight={72} showLabel="もっと見る" hideLabel="閉じる">
               <LinkifyWrapper>{description}</LinkifyWrapper>
             </Spoiler>
           </Box>
