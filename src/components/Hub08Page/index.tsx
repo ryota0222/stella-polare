@@ -1,5 +1,6 @@
 import { Liff } from "@line/liff";
 import {
+  Box,
   Center,
   Container,
   Loader,
@@ -16,12 +17,13 @@ import { useDisclosure } from "@mantine/hooks";
 import { PostModal } from "./components/PostModal";
 import { PutModal } from "./components/PutModal";
 import { DeleteModal } from "./components/DeleteModal";
-import { HubItem } from "./components/HubItem";
+import { LinkifyWrapper } from "../LinkfyWrapper";
+// import { HubItem } from "./components/HubItem";
 interface Props {
   liff: Liff | null;
 }
 
-export const Hub01Page = memo<Props>(({ liff }) => {
+export const Hub08Page = memo<Props>(({ liff }) => {
   const theme = useMantineTheme();
   const [postModalOpened, { open: postModalOpen, close: postModalClose }] =
     useDisclosure(false);
@@ -37,7 +39,7 @@ export const Hub01Page = memo<Props>(({ liff }) => {
   });
   const { data: hubData, isLoading } = useFetchHubData({
     id: data?.spaceId,
-    hubId: "hub_01",
+    hubId: "hub_08",
     accessToken: liff?.getAccessToken() || "",
   });
   useEffect(() => {
@@ -48,7 +50,7 @@ export const Hub01Page = memo<Props>(({ liff }) => {
   return (
     <>
       <Container pt="md" pb={100}>
-        <HubTitle>行きたい場所</HubTitle>
+        <HubTitle>メモ</HubTitle>
         <Stack mt="md">
           {isLoading ? (
             <Center py="20vh">
@@ -59,10 +61,10 @@ export const Hub01Page = memo<Props>(({ liff }) => {
               {hubData?.length ? (
                 hubData.map((item) => (
                   <Fragment key={item.id}>
-                    <HubItem
+                    {/* <HubItem
                       id={item.id}
-                      name={item.name || ""}
-                      url={item.url || ""}
+                      name={item.name}
+                      url={item.url}
                       lastUpdatedUser={item.lastUpdatedUser}
                       updatedAt={item.updatedAt}
                       createdAt={item.createdAt}
@@ -74,7 +76,11 @@ export const Hub01Page = memo<Props>(({ liff }) => {
                         setTargetId(id);
                         deleteModalOpen();
                       }}
-                    />
+                    /> */}
+                    <Box>
+                      <Text>{item.title}</Text>
+                      <LinkifyWrapper>{item.description}</LinkifyWrapper>
+                    </Box>
                   </Fragment>
                 ))
               ) : (
@@ -88,7 +94,7 @@ export const Hub01Page = memo<Props>(({ liff }) => {
           )}
         </Stack>
         <FloatingAddButton
-          color={theme.colors.red[6]}
+          color={theme.colors.teal[6]}
           onClick={postModalOpen}
         />
       </Container>
@@ -96,26 +102,27 @@ export const Hub01Page = memo<Props>(({ liff }) => {
         opened={postModalOpened}
         close={postModalClose}
         id={data?.spaceId || ""}
-        hubId="hub_01"
+        hubId="hub_08"
         accessToken={liff?.getAccessToken() || ""}
       />
       <PutModal
         opened={putModalOpened}
         close={putModalClose}
         id={data?.spaceId || ""}
-        hubId="hub_01"
+        hubId="hub_08"
         accessToken={liff?.getAccessToken() || ""}
         defaultData={{
           id: targetId || "",
-          name: hubData?.find((item) => item.id === targetId)?.name || "",
-          url: hubData?.find((item) => item.id === targetId)?.url || "",
+          title: hubData?.find((item) => item.id === targetId)?.title || "",
+          description:
+            hubData?.find((item) => item.id === targetId)?.description || "",
         }}
       />
       <DeleteModal
         opened={deleteModalOpened}
         close={deleteModalClose}
         id={data?.spaceId || ""}
-        hubId="hub_01"
+        hubId="hub_08"
         accessToken={liff?.getAccessToken() || ""}
         dataId={targetId || ""}
       />

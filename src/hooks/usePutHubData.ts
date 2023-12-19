@@ -8,8 +8,10 @@ interface Params {
   accessToken: string | null;
   body: {
     id: string;
-    name: string;
-    url: string | null;
+    name?: string;
+    url?: string | null;
+    title?: string;
+    description?: string;
     hubId: string;
   };
 }

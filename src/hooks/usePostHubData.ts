@@ -7,8 +7,10 @@ interface Params {
   id: string;
   accessToken: string | null;
   body: {
-    name: string;
-    url: string | null;
+    name?: string;
+    url?: string | null;
+    title?: string;
+    description?: string;
     hubId: string;
   };
 }

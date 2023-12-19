@@ -5,8 +5,8 @@ import { MdDirectionsWalk } from "react-icons/md";
 import { FaListCheck } from "react-icons/fa6";
 import { TbPigMoney } from "react-icons/tb";
 import { MdOutlineRule } from "react-icons/md";
-import { MdAnnouncement } from "react-icons/md";
 import { PiForkKnifeFill } from "react-icons/pi";
+import { LuFileEdit } from "react-icons/lu";
 
 export const HUB_LIST: IHubItem[] = [
   {
@@ -53,16 +53,16 @@ export const HUB_LIST: IHubItem[] = [
   },
   {
     id: "hub_07",
-    title: "ルール",
+    title: "我が家のルール",
     color: "cyan",
     isComingSoon: true,
     icon: MdOutlineRule,
   },
   {
     id: "hub_08",
-    title: "リマインダー",
+    title: "メモ",
     color: "teal",
-    isComingSoon: true,
-    icon: MdAnnouncement,
+    isComingSoon: false,
+    icon: LuFileEdit,
   },
 ];
