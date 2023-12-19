@@ -40,7 +40,7 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
   }, [data]);
   return (
     <>
-      <Box bg="gray.0" h={140} mb="lg">
+      <Box bg="gray.0" h={140} mb="lg" pos="relative">
         {isLoading ? (
           <Center h="100%">
             <Loader color="gray" type="dots" />
@@ -48,7 +48,7 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
         ) : (
           <>
             {space && (
-              <Container pos="relative" h="100%">
+              <Container h="100%">
                 <Text fz="xs" pt="sm" fw="bold" style={{ textAlign: "center" }}>
                   このスペースを閲覧できるユーザー
                 </Text>
@@ -77,21 +77,21 @@ export const HubScreen = memo<Props>(({ accessToken }) => {
                     </Stack>
                   )}
                 </Flex>
-                <Image
-                  src="/users-illust.webp"
-                  alt="イラスト"
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    bottom: 0,
-                    width: 80,
-                    height: 80,
-                  }}
-                />
               </Container>
             )}
           </>
         )}
+        <Image
+          src="/users-illust.webp"
+          alt="イラスト"
+          style={{
+            position: "absolute",
+            right: 8,
+            bottom: 0,
+            width: 80,
+            height: 80,
+          }}
+        />
       </Box>
       <Container>
         <Flex wrap="wrap" justify="space-around" gap="md" mt="md">
