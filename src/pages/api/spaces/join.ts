@@ -61,9 +61,7 @@ export default async function handler(
       }
       const docRef = db.collection(COLLECTION_NAME).doc(docId);
       await docRef.update({
-        partner: req.body.partnerId
-          ? `/users/${req.body.partnerId}`
-          : undefined,
+        partner: `/users/${profile.userId}`,
       });
       return res.status(200).json({ data: docId });
     }

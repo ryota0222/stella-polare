@@ -16,6 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import client from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { notifications } from "@mantine/notifications";
 
 interface Props {
   liff: Liff;
@@ -60,7 +61,6 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
             },
             body: {
               password,
-              partnerId: data?.userId,
             },
           });
           await queryClient.invalidateQueries({
@@ -89,10 +89,17 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
         }
         setPending(false);
       } catch (err) {
+        if (err instanceof Error) {
+          notifications.show({
+            title: "エラー",
+            message: err.message,
+            autoClose: 5000,
+          });
+        }
         setPending(false);
       }
     },
-    [createModalOpened, joinModalOpened, liff, data?.userId, queryClient]
+    [createModalOpened, joinModalOpened, liff, queryClient]
   );
   return (
     <>
