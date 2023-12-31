@@ -55,14 +55,17 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
       try {
         setPending(true);
         if (joinModalOpened) {
-          const response = await client.post("/spaces/join", {
-            headers: {
-              Authorization: `Bearer ${liff.getAccessToken()}`,
-            },
-            body: {
+          const response = await client.post(
+            "/spaces/join",
+            {
               password,
             },
-          });
+            {
+              headers: {
+                Authorization: `Bearer ${liff.getAccessToken()}`,
+              },
+            }
+          );
           await queryClient.invalidateQueries({
             queryKey: [
               "spaces",
@@ -70,14 +73,17 @@ export const CreateSpacePage = memo<Props>(({ liff }) => {
             ],
           });
         } else if (createModalOpened) {
-          const response = await client.post("/spaces", {
-            headers: {
-              Authorization: `Bearer ${liff.getAccessToken()}`,
-            },
-            body: {
+          const response = await client.post(
+            "/spaces",
+            {
               password,
             },
-          });
+            {
+              headers: {
+                Authorization: `Bearer ${liff.getAccessToken()}`,
+              },
+            }
+          );
           if (response.data) {
             await queryClient.invalidateQueries({
               queryKey: [
