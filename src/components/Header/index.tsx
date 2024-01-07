@@ -43,15 +43,6 @@ export const Header = memo<Props>(({ accessToken }) => {
         {APP_NAME}
       </Title>
       <Spacer />
-      {accessToken && (
-        <CopyButton value={accessToken}>
-          {({ copied, copy }) => (
-            <Button color={copied ? "teal" : "blue"} onClick={copy} size="xs">
-              {copied ? "㊙️" : "👍"}
-            </Button>
-          )}
-        </CopyButton>
-      )}
     </Box>
   );
 });

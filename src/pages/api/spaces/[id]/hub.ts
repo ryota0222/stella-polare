@@ -243,7 +243,7 @@ export default async function handler(
             {
               type: "text",
               text: `${profile.displayName}さんが「${
-                HUB_LIST.find((hub) => hub.id === req.body.hubId)?.title || ""
+                HUB_LIST.find((hub) => hub.id === req.query.hubId)?.title || ""
               }」のデータを削除しました。`,
             },
           ],
