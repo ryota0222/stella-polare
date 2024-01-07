@@ -27,7 +27,7 @@ export const HUB_LIST: IHubItem[] = [
     id: "hub_03",
     title: "欲しいもの",
     color: "grape",
-    isComingSoon: true,
+    isComingSoon: false,
     icon: TbPigMoney,
   },
   {
