@@ -86,7 +86,7 @@ export default async function handler(
     }
     if (req.method === "POST") {
       let body = null;
-      if (["hub_01", "hub_02"].includes(req.body.hubId)) {
+      if (["hub_01", "hub_02", "hub_03"].includes(req.body.hubId)) {
         body = {
           createdAt: new Date(),
           updatedAt: new Date(),
